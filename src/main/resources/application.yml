@@ -15,14 +15,12 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
     open-in-view: false
-  h2:
-    console:
-      enabled: false
 
 openai:
   api-key: ${OPENAI_API_KEY}
-  model: ${OPENAI_MODEL:gpt-4o-mini}                  # 업로드할 폴더 ID
+  model: ${OPENAI_MODEL:gpt-4o-mini}
 
 bot:
+  blog-name: ${BOT_BLOG_NAME:ai-blogbot}
   cron: ${BOT_CRON:0 0 9 * * *}
   topics: ${BOT_TOPICS:AI로 업무 효율 높이기,최근 떠오른 생산성 툴,개발자가 알아야 할 AI 도구,스타트업의 AI 도입 사례,오늘의 AI 기술 트렌드}

@@ -35,9 +35,8 @@ public class PostService {
         log = postLogRepository.save(log);
 
         try {
-            saveAsHtmlFile(title, safeHtml);
+            saveAsHtmlFile(blogName, title, safeHtml);
             log.setStatus("LOCAL_ONLY");
-            log.setPostUrl(null);
             log.setPostedAt(LocalDateTime.now());
         } catch (Exception e) {
             log.setStatus("FAIL");
@@ -47,10 +46,10 @@ public class PostService {
         return postLogRepository.save(log);
     }
 
-    private void saveAsHtmlFile(String title, String htmlContent) {
+    private void saveAsHtmlFile(String blogName, String title, String htmlContent) {
         try {
             String safeTitle = title.replaceAll("[^a-zA-Z0-9가-힣\\s]", "").replace(" ", "_");
-            File dir = new File("posts");
+            File dir = new File("posts/" + blogName);
             if (!dir.exists()) dir.mkdirs();
 
             File file = new File(dir, safeTitle + ".html");
@@ -58,7 +57,7 @@ public class PostService {
                 writer.write("<h1>" + title + "</h1>\n");
                 writer.write(htmlContent);
             }
-            System.out.println("✅ 글 저장 완료: " + file.getAbsolutePath());
+            System.out.println("✅ [" + blogName + "] 글 저장 완료: " + file.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }

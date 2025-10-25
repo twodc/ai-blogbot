@@ -14,7 +14,7 @@ public class PostController {
     private final PostService postService;
     private final PostLogRepository postLogRepository;
 
-    // ✅ 글 자동 생성 (GET/POST 둘 다 허용)
+    // ✅ GET/POST 모두 허용 (Render 브라우저 테스트 호환)
     @RequestMapping(value = "/publish", method = {RequestMethod.GET, RequestMethod.POST})
     public PostLog publish(
             @RequestParam(defaultValue = "ai-blogbot") String blogName,
@@ -23,7 +23,7 @@ public class PostController {
         return postService.generateAndSave(blogName, topic);
     }
 
-    // ✅ 특정 ID로 글 조회
+    // ✅ 특정 글 ID 조회
     @GetMapping("/{id}")
     public PostLog get(@PathVariable Long id) {
         return postLogRepository.findById(id).orElseThrow();
