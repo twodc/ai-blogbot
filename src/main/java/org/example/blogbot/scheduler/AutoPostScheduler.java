@@ -30,7 +30,7 @@ public class AutoPostScheduler {
             List<String> topicList = List.of(topics.split(","));
             String randomTopic = topicList.get(new Random().nextInt(topicList.size())).trim();
 
-            PostLog postLog = postService.generateAndSave(blogName, randomTopic);
+            PostLog postLog = postService.generateAndPublish(blogName, randomTopic);
             log.info("✅ AutoPost done [{}]: {}", blogName, postLog.getTitle());
         } catch (Exception e) {
             log.error("❌ AutoPost error", e);

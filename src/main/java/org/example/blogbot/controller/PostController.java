@@ -20,7 +20,7 @@ public class PostController {
             @RequestParam(defaultValue = "ai-blogbot") String blogName,
             @RequestParam(defaultValue = "오늘의 AI 트렌드 요약") String topic
     ) {
-        return postService.generateAndSave(blogName, topic);
+        return postService.generateAndPublish(blogName, topic);
     }
 
     // ✅ 특정 글 ID 조회
