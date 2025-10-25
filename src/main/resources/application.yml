@@ -1,0 +1,31 @@
+server:
+  port: 10000  # Render의 기본 포트 매핑과 무관, 내부용
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/blogbot;AUTO_SERVER=TRUE;MODE=MYSQL;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=false
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: false
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  model: ${OPENAI_MODEL:gpt-4o-mini}
+
+# Google Drive 업로드 (옵션)
+gdrive:
+  service-account-json: ${GDRIVE_SERVICE_ACCOUNT_JSON:}   # 서비스 계정 JSON 통째로
+  folder-id: ${GDRIVE_FOLDER_ID:}                         # 업로드할 폴더 ID
+
+bot:
+  cron: ${BOT_CRON:0 0 9 * * *}
+  topics: ${BOT_TOPICS:AI로 업무 효율 높이기,최근 떠오른 생산성 툴,개발자가 알아야 할 AI 도구,스타트업의 AI 도입 사례,오늘의 AI 기술 트렌드}
