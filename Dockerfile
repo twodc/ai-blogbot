@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 
 # 테스트는 건너뛰고 빌드만 수행
-RUN gradle clean build -x test
+RUN gradle clean build -x test --no-daemon --stacktrace
 
 # ---- 2단계: Run Stage ----
 FROM eclipse-temurin:17-jdk-alpine
