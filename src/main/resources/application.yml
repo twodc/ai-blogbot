@@ -1,9 +1,9 @@
 server:
-  port: 10000  # Render의 기본 포트 매핑과 무관, 내부용
+  port: 8080
 
 spring:
   datasource:
-    url: jdbc:h2:file:./data/blogbot;AUTO_SERVER=TRUE;MODE=MYSQL;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=false
+    url: jdbc:h2:mem:blogbot;MODE=MySQL;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -13,6 +13,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    open-in-view: false
   h2:
     console:
       enabled: false
