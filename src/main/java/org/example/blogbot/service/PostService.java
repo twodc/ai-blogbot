@@ -19,7 +19,7 @@ public class PostService {
 
     private final GptService gptService;
     private final PostLogRepository postLogRepository;
-    private final DriveUploadService driveUploadService;
+//    private final DriveUploadService driveUploadService;
 
     public PostLog generateAndSave(String topic) {
         LocalDateTime now = LocalDateTime.now();
@@ -51,14 +51,14 @@ public class PostService {
             return postLogRepository.save(fail);
         }
 
-        // 구글 드라이브 업로드 (옵션)
-        String webLink = driveUploadService.uploadHtml(file);
+//        // 구글 드라이브 업로드 (옵션)
+//        String webLink = driveUploadService.uploadHtml(file);
 
         PostLog ok = PostLog.builder()
                 .title(title)
                 .content(safeHtml)
                 .status("LOCAL_ONLY")
-                .postUrl(webLink) // 드라이브 링크 저장(있으면)
+                .postUrl(null) // 드라이브 링크 저장(있으면)
                 .createdAt(now)
                 .postedAt(LocalDateTime.now())
                 .build();
