@@ -7,10 +7,8 @@ import org.example.blogbot.util.HtmlUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
+import java.io.File;
+import java.io.FileWriter;
 import java.time.LocalDateTime;
 
 @Service
@@ -19,50 +17,50 @@ public class PostService {
 
     private final GptService gptService;
     private final PostLogRepository postLogRepository;
-//    private final DriveUploadService driveUploadService;
 
-    public PostLog generateAndSave(String topic) {
+    public PostLog generateAndSave(String blogName, String topic) {
         LocalDateTime now = LocalDateTime.now();
 
         String html = gptService.generateHtmlPost(topic);
         String safeHtml = HtmlUtil.ensureHtml(html);
         String title = gptService.suggestTitle(topic, safeHtml);
 
-        // 파일 저장
-        String date = LocalDate.now().toString();
-        String fileName = HtmlUtil.safeFileName(date + "_" + title) + ".html";
-        java.io.File dir = new java.io.File("posts");
-        if (!dir.exists()) dir.mkdirs();
-        java.io.File file = new java.io.File(dir, fileName);
-
-        try (BufferedWriter w = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            w.write("<meta charset='UTF-8'>\n");
-            w.write("<h1>" + title + "</h1>\n");
-            w.write(safeHtml);
-        } catch (Exception e) {
-            PostLog fail = PostLog.builder()
-                    .title(title)
-                    .content(safeHtml)
-                    .status("FAIL")
-                    .errorMessage("파일 저장 실패: " + e.getMessage())
-                    .createdAt(now)
-                    .build();
-            return postLogRepository.save(fail);
-        }
-
-//        // 구글 드라이브 업로드 (옵션)
-//        String webLink = driveUploadService.uploadHtml(file);
-
-        PostLog ok = PostLog.builder()
+        PostLog log = PostLog.builder()
                 .title(title)
                 .content(safeHtml)
-                .status("LOCAL_ONLY")
-                .postUrl(null) // 드라이브 링크 저장(있으면)
+                .status("INIT")
+                .blogName(blogName)
                 .createdAt(now)
-                .postedAt(LocalDateTime.now())
                 .build();
+        log = postLogRepository.save(log);
 
-        return postLogRepository.save(ok);
+        try {
+            saveAsHtmlFile(title, safeHtml);
+            log.setStatus("LOCAL_ONLY");
+            log.setPostUrl(null);
+            log.setPostedAt(LocalDateTime.now());
+        } catch (Exception e) {
+            log.setStatus("FAIL");
+            log.setErrorMessage(e.getMessage());
+        }
+
+        return postLogRepository.save(log);
+    }
+
+    private void saveAsHtmlFile(String title, String htmlContent) {
+        try {
+            String safeTitle = title.replaceAll("[^a-zA-Z0-9가-힣\\s]", "").replace(" ", "_");
+            File dir = new File("posts");
+            if (!dir.exists()) dir.mkdirs();
+
+            File file = new File(dir, safeTitle + ".html");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write("<h1>" + title + "</h1>\n");
+                writer.write(htmlContent);
+            }
+            System.out.println("✅ 글 저장 완료: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

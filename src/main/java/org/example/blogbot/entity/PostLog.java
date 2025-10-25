@@ -20,13 +20,17 @@ public class PostLog {
     private String title;
 
     @Lob
-    @Column(columnDefinition = "CLOB")
     private String content;
 
-    private String status;          // LOCAL_ONLY / FAIL
-    private String postUrl;         // (티스토리 사용 안함 - 항상 null)
-    private String errorMessage;
+    private String status; // INIT, LOCAL_ONLY, FAIL 등
+
+    private String blogName; // ✅ 추가됨 (블로그 이름 or 카테고리 구분용)
+
+    private String postUrl;
 
     private LocalDateTime createdAt;
-    private LocalDateTime postedAt; // 파일 저장/업로드 시각
+
+    private LocalDateTime postedAt;
+
+    private String errorMessage;
 }
